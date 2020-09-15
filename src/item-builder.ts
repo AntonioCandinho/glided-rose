@@ -19,6 +19,18 @@ export class ItemBuilder {
 		return new ItemBuilder(`Sulfuras ${Math.random()}`);
 	}
 
+	public static createBackstagePass(): ItemBuilder {
+		return new ItemBuilder(`Backstage passes ${Math.random()}`);
+	}
+
+	public addQuality(n: number): ItemBuilder {
+		return this.withQuality(this.quality + n);
+	}
+
+	public addSellIn(n: number): ItemBuilder {
+		return this.withSellIn(this.sellIn + n);
+	}
+
 	public withSellIn(sellIn: number): ItemBuilder {
 		return new ItemBuilder(this.name, sellIn, this.quality);
 	}

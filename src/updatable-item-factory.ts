@@ -1,3 +1,4 @@
+import {BackstagePassItem} from './backstage-pass-item';
 import {ImmutableItem} from './immutable-item';
 import {IncreasingQualityItem} from './increasing-quality-item';
 import {Item} from './item';
@@ -14,6 +15,9 @@ export class UpdatableItemFactory {
 		}
 		if (/Sulfuras/i.test(item.name)) {
 			return new ImmutableItem(item);
+		}
+		if (/Backstage Passes/i.test(item.name)) {
+			return new BackstagePassItem(item);
 		}
 		const regularItem = new RegularItem(item);
 		const twiceDegrading = new TwiceDegradingItem(regularItem);

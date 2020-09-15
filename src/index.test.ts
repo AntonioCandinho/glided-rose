@@ -57,4 +57,45 @@ describe('GlidedRose tests', () => {
 			new Item(item.name, item.sellIn, item.quality),
 		]);
 	});
+
+	describe('given some Backstage passes', () => {
+		const backstagePassBuilder = ItemBuilder.createBackstagePass().withQuality(
+			10,
+		);
+
+		it('their quality should increase', () => {
+			const backstagePass = backstagePassBuilder.withSellIn(11);
+			expect(updateItems([backstagePass.build()])).toEqual([
+				backstagePass.addQuality(1).addSellIn(-1).build(),
+			]);
+		});
+
+		it('their quality should never be greater than 50', () => {
+			const backstagePass = backstagePassBuilder.withQuality(50);
+			expect(updateItems([backstagePass.build()])).toEqual([
+				backstagePass.addSellIn(-1).build(),
+			]);
+		});
+
+		it('their quality should increase by 2 when sellIn is 10 or less', () => {
+			const backstagePass = backstagePassBuilder.withSellIn(10);
+			expect(updateItems([backstagePass.build()])).toEqual([
+				backstagePass.addQuality(2).addSellIn(-1).build(),
+			]);
+		});
+
+		it('their quality should increase by 3 when sellIn is 5 or less', () => {
+			const backstagePass = ItemBuilder.createBackstagePass().withSellIn(5);
+			expect(updateItems([backstagePass.build()])).toEqual([
+				backstagePass.addQuality(3).addSellIn(-1).build(),
+			]);
+		});
+
+		it('their quality should drop to 0 when sellIn is 0 or negative', () => {
+			const backstagePass = ItemBuilder.createBackstagePass().withSellIn(0);
+			expect(updateItems([backstagePass.build()])).toEqual([
+				backstagePass.withQuality(0).addSellIn(-1).build(),
+			]);
+		});
+	});
 });
