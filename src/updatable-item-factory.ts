@@ -3,8 +3,8 @@ import {ImmutableItem} from './immutable-item';
 import {IncreasingQualityItem} from './increasing-quality-item';
 import {Item} from './item';
 import {RegularItem} from './regular-item';
-import {TwiceDegradingItem} from './twice-degrading-item';
 import {UpdatableItem} from './updatable-item';
+import {TwiceDegradingItem} from './twice-degrade-item';
 
 export class UpdatableItemFactory {
 	public constructor() {}
@@ -20,7 +20,9 @@ export class UpdatableItemFactory {
 			return new BackstagePassItem(item);
 		}
 		const regularItem = new RegularItem(item);
-		const twiceDegrading = new TwiceDegradingItem(regularItem);
-		return twiceDegrading;
+		if (/Conjured/i.test(item.name)) {
+			return new TwiceDegradingItem(regularItem);
+		}
+		return regularItem;
 	}
 }

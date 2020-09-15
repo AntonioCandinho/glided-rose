@@ -6,7 +6,8 @@ export class RegularItem implements UpdatableItem {
 
 	public update(): Item {
 		const {sellIn, quality, name} = this.item;
-		const newQuality = quality > 0 ? quality - 1 : quality;
+		let newQuality = sellIn <= 0 ? quality - 2 : quality - 1;
+		newQuality = newQuality > 0 ? newQuality : 0;
 		return new Item(name, sellIn - 1, newQuality);
 	}
 }

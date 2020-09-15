@@ -5,57 +5,53 @@ import {ItemBuilder} from './item-builder';
 describe('GlidedRose tests', () => {
 	const updateItems = (items: Item[]) => new GlidedRose(items).updateQuality();
 
+	const expectUpdatedItem = (
+		beforeUpdate: ItemBuilder,
+		afterUpdate: ItemBuilder,
+	) => {
+		expect(updateItems([beforeUpdate.build()])).toEqual([afterUpdate.build()]);
+	};
+
 	describe('given some regular items', () => {
-		const items = [
-			ItemBuilder.createRegularItem().build(),
-			ItemBuilder.createRegularItem().build(),
-			ItemBuilder.createRegularItem().build(),
-		];
+		const regularItem = ItemBuilder.createRegularItem();
 
 		it('quality and sellIn should decrease by one', () => {
-			const expectedItems = items.map(
-				(i) => new Item(i.name, i.sellIn - 1, i.quality - 1),
-			);
-			expect(updateItems(items)).toEqual(expectedItems);
+			expectUpdatedItem(regularItem, regularItem.addQuality(-1).addSellIn(-1));
 		});
 
 		it('quality should not be negative', () => {
-			const item = new ItemBuilder().withQuality(0).build();
-			expect(updateItems([item])).toEqual([
-				new Item(item.name, item.sellIn - 1, 0),
-			]);
+			const zeroQualityItem = regularItem.withQuality(0);
+			expectUpdatedItem(zeroQualityItem, zeroQualityItem.addSellIn(-1));
 		});
 
 		it('once the sellIn value is 0 quality should decrease by two', () => {
-			const item = new ItemBuilder().withSellIn(0).withQuality(4).build();
-			expect(updateItems([item])).toEqual([
-				new Item(item.name, -1, item.quality - 2),
-			]);
+			const overDateItem = regularItem.withSellIn(0);
+			expectUpdatedItem(
+				overDateItem,
+				overDateItem.addSellIn(-1).addQuality(-2),
+			);
 		});
 	});
 
 	describe('given some Aged Brie', () => {
-		const agedBrie = ItemBuilder.createAgedBrie().withQuality(20).build();
+		const agedBrie = ItemBuilder.createAgedBrie().withQuality(20);
 
 		it('quality should increase over time', () => {
-			expect(updateItems([agedBrie])).toEqual([
-				new Item(agedBrie.name, agedBrie.sellIn - 1, agedBrie.quality + 1),
-			]);
+			expectUpdatedItem(agedBrie, agedBrie.addSellIn(-1).addQuality(+1));
 		});
 
 		it('should never have a quality over 50', () => {
-			const item = ItemBuilder.createAgedBrie().withQuality(50).build();
-			expect(updateItems([item])).toEqual([
-				new Item(item.name, item.sellIn - 1, item.quality),
-			]);
+			const maxQualityBrie = agedBrie.withQuality(50);
+			expectUpdatedItem(maxQualityBrie, maxQualityBrie.addSellIn(-1));
 		});
 	});
 
-	it('Sulfuras should never change sellIn nor quality value', () => {
-		const item = ItemBuilder.createSulfuras().build();
-		expect(updateItems([item])).toEqual([
-			new Item(item.name, item.sellIn, item.quality),
-		]);
+	describe('given some Sulfuras', () => {
+		const sulfura = ItemBuilder.createSulfuras();
+
+		it('should nave change sellIn neither quality', () => {
+			expectUpdatedItem(sulfura, sulfura);
+		});
 	});
 
 	describe('given some Backstage passes', () => {
@@ -64,38 +60,68 @@ describe('GlidedRose tests', () => {
 		);
 
 		it('their quality should increase', () => {
-			const backstagePass = backstagePassBuilder.withSellIn(11);
-			expect(updateItems([backstagePass.build()])).toEqual([
-				backstagePass.addQuality(1).addSellIn(-1).build(),
-			]);
+			const earlyBackstagePass = backstagePassBuilder.withSellIn(11);
+			expectUpdatedItem(
+				earlyBackstagePass,
+				earlyBackstagePass.addQuality(1).addSellIn(-1),
+			);
 		});
 
 		it('their quality should never be greater than 50', () => {
-			const backstagePass = backstagePassBuilder.withQuality(50);
-			expect(updateItems([backstagePass.build()])).toEqual([
-				backstagePass.addSellIn(-1).build(),
-			]);
+			const maxQualityBackstagePass = backstagePassBuilder.withQuality(50);
+			expectUpdatedItem(
+				maxQualityBackstagePass,
+				maxQualityBackstagePass.addSellIn(-1),
+			);
 		});
 
 		it('their quality should increase by 2 when sellIn is 10 or less', () => {
-			const backstagePass = backstagePassBuilder.withSellIn(10);
-			expect(updateItems([backstagePass.build()])).toEqual([
-				backstagePass.addQuality(2).addSellIn(-1).build(),
-			]);
+			const day10BackstagePass = backstagePassBuilder.withSellIn(10);
+			expectUpdatedItem(
+				day10BackstagePass,
+				day10BackstagePass.addQuality(2).addSellIn(-1),
+			);
 		});
 
 		it('their quality should increase by 3 when sellIn is 5 or less', () => {
-			const backstagePass = ItemBuilder.createBackstagePass().withSellIn(5);
-			expect(updateItems([backstagePass.build()])).toEqual([
-				backstagePass.addQuality(3).addSellIn(-1).build(),
-			]);
+			const day5BackstagePass = backstagePassBuilder.withSellIn(5);
+			expectUpdatedItem(
+				day5BackstagePass,
+				day5BackstagePass.addQuality(3).addSellIn(-1),
+			);
 		});
 
 		it('their quality should drop to 0 when sellIn is 0 or negative', () => {
-			const backstagePass = ItemBuilder.createBackstagePass().withSellIn(0);
-			expect(updateItems([backstagePass.build()])).toEqual([
-				backstagePass.withQuality(0).addSellIn(-1).build(),
-			]);
+			const concertDayBackstagePass = backstagePassBuilder.withSellIn(0);
+			expectUpdatedItem(
+				concertDayBackstagePass,
+				concertDayBackstagePass.withQuality(0).addSellIn(-1),
+			);
+		});
+	});
+
+	describe('given some Conjured items', () => {
+		const regularItem = ItemBuilder.createRegularItem()
+			.withSellIn(5)
+			.withQuality(9)
+			.build();
+		const conjura = ItemBuilder.createConjured()
+			.withSellIn(5)
+			.withQuality(18)
+			.build();
+
+		it('should degrade twice as fast as regular items', () => {
+			let updatedRegular = regularItem;
+			let updatedConjura = conjura;
+			while (updatedRegular.quality > 0) {
+				const [newRegular] = updateItems([updatedRegular]);
+				const [newConjura] = updateItems([updatedConjura]);
+				expect(updatedConjura.quality - newConjura.quality).toEqual(
+					2 * (updatedRegular.quality - newRegular.quality),
+				);
+				updatedRegular = newRegular;
+				updatedConjura = newConjura;
+			}
 		});
 	});
 });

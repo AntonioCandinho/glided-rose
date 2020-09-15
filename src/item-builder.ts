@@ -23,6 +23,10 @@ export class ItemBuilder {
 		return new ItemBuilder(`Backstage passes ${Math.random()}`);
 	}
 
+	public static createConjured(): ItemBuilder {
+		return new ItemBuilder(`Conjured ${Math.random()}`);
+	}
+
 	public addQuality(n: number): ItemBuilder {
 		return this.withQuality(this.quality + n);
 	}
