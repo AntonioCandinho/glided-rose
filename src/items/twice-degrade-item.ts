@@ -1,8 +1,11 @@
-import {Item} from './item';
+import {Item} from '../item';
 import {UpdatableItem} from './updatable-item';
 
 export class TwiceDegradingItem implements UpdatableItem {
-	public constructor(private updatableItem: UpdatableItem) {}
+	public constructor(
+		private readonly item: Item,
+		private readonly updatableItem: UpdatableItem,
+	) {}
 
 	public update(): Item {
 		const {name, quality: oldQuality, sellIn} = this.item;
@@ -12,9 +15,5 @@ export class TwiceDegradingItem implements UpdatableItem {
 			return new Item(name, sellIn - 1, oldQuality);
 		}
 		return new Item(name, sellIn - 1, newQuality);
-	}
-
-	public get item(): Item {
-		return this.updatableItem.item;
 	}
 }

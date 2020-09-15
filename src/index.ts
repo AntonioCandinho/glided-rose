@@ -1,5 +1,5 @@
 import {Item} from './item';
-import {UpdatableItemFactory} from './updatable-item-factory';
+import {UpdatableItemFactory} from './factories/updatable-item-factory';
 
 export class GlidedRose {
 	public constructor(
