@@ -15,6 +15,10 @@ export class ItemBuilder {
 		return new ItemBuilder(`Aged Brie ${Math.random()}`);
 	}
 
+	public static createSulfuras(): ItemBuilder {
+		return new ItemBuilder(`Sulfuras ${Math.random()}`);
+	}
+
 	public withSellIn(sellIn: number): ItemBuilder {
 		return new ItemBuilder(this.name, sellIn, this.quality);
 	}

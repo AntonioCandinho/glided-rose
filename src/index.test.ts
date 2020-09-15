@@ -35,19 +35,10 @@ describe('GlidedRose tests', () => {
 	});
 
 	describe('given some Aged Brie', () => {
-		const regularItem = ItemBuilder.createRegularItem()
-			.withSellIn(1)
-			.withQuality(2)
-			.build();
 		const agedBrie = ItemBuilder.createAgedBrie().withQuality(20).build();
 
 		it('quality should increase over time', () => {
-			expect(updateItems([regularItem, agedBrie])).toEqual([
-				new Item(
-					regularItem.name,
-					regularItem.sellIn - 1,
-					regularItem.quality - 1,
-				),
+			expect(updateItems([agedBrie])).toEqual([
 				new Item(agedBrie.name, agedBrie.sellIn - 1, agedBrie.quality + 1),
 			]);
 		});
@@ -58,5 +49,12 @@ describe('GlidedRose tests', () => {
 				new Item(item.name, item.sellIn - 1, item.quality),
 			]);
 		});
+	});
+
+	it('Sulfuras should never change sellIn nor quality value', () => {
+		const item = ItemBuilder.createSulfuras().build();
+		expect(updateItems([item])).toEqual([
+			new Item(item.name, item.sellIn, item.quality),
+		]);
 	});
 });
