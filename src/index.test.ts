@@ -7,9 +7,9 @@ describe('GlidedRose tests', () => {
 
 	describe('given some regular items', () => {
 		const items = [
-			new ItemBuilder().build(),
-			new ItemBuilder().build(),
-			new ItemBuilder().build(),
+			ItemBuilder.createRegularItem().build(),
+			ItemBuilder.createRegularItem().build(),
+			ItemBuilder.createRegularItem().build(),
 		];
 
 		it('quality and sellIn should decrease by one', () => {
@@ -30,6 +30,32 @@ describe('GlidedRose tests', () => {
 			const item = new ItemBuilder().withSellIn(0).withQuality(4).build();
 			expect(updateItems([item])).toEqual([
 				new Item(item.name, -1, item.quality - 2),
+			]);
+		});
+	});
+
+	describe('given some Aged Brie', () => {
+		const regularItem = ItemBuilder.createRegularItem()
+			.withSellIn(1)
+			.withQuality(2)
+			.build();
+		const agedBrie = ItemBuilder.createAgedBrie().withQuality(20).build();
+
+		it('quality should increase over time', () => {
+			expect(updateItems([regularItem, agedBrie])).toEqual([
+				new Item(
+					regularItem.name,
+					regularItem.sellIn - 1,
+					regularItem.quality - 1,
+				),
+				new Item(agedBrie.name, agedBrie.sellIn - 1, agedBrie.quality + 1),
+			]);
+		});
+
+		it('should never have a quality over 50', () => {
+			const item = ItemBuilder.createAgedBrie().withQuality(50).build();
+			expect(updateItems([item])).toEqual([
+				new Item(item.name, item.sellIn - 1, item.quality),
 			]);
 		});
 	});

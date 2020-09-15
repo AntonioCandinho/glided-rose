@@ -7,6 +7,14 @@ export class ItemBuilder {
 		private readonly quality = Math.floor(Math.random() * 50) + 1,
 	) {}
 
+	public static createRegularItem(): ItemBuilder {
+		return new ItemBuilder();
+	}
+
+	public static createAgedBrie(): ItemBuilder {
+		return new ItemBuilder(`Aged Brie ${Math.random()}`);
+	}
+
 	public withSellIn(sellIn: number): ItemBuilder {
 		return new ItemBuilder(this.name, sellIn, this.quality);
 	}
