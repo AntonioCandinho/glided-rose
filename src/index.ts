@@ -8,6 +8,6 @@ export class GlidedRose {
 	) {}
 
 	public updateQuality(): Item[] {
-		return this.items.map((i) => this.factory.create(i).update());
+		return this.items.map((i) => this.factory.create(i).update().asItem());
 	}
 }

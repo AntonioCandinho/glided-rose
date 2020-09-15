@@ -1,12 +1,10 @@
-import {Item} from '../item';
+import {LimitedItem} from './limited-item';
 import {UpdatableItem} from './updatable-item';
 
 export class IncreasingQualityItem implements UpdatableItem {
-	public constructor(private readonly item: Item) {}
+	public constructor(private readonly item: LimitedItem) {}
 
-	public update(): Item {
-		const {name, sellIn, quality} = this.item;
-		const newQuality = quality >= 50 ? quality : quality + 1;
-		return new Item(name, sellIn - 1, newQuality);
+	public update(): LimitedItem {
+		return this.item.addQuality(+1).addSellIn(-1);
 	}
 }

@@ -1,5 +1,5 @@
-import {Item} from '../item';
+import {LimitedItem} from './limited-item';
 
 export interface UpdatableItem {
-	update(): Item;
+	update(): LimitedItem;
 }

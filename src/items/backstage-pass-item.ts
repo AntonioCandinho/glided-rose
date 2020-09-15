@@ -1,22 +1,21 @@
-import {Item} from '../item';
+import {LimitedItem} from './limited-item';
 import {UpdatableItem} from './updatable-item';
 
 export class BackstagePassItem implements UpdatableItem {
-	public constructor(private readonly item: Item) {}
+	public constructor(private readonly item: LimitedItem) {}
 
-	public update(): Item {
-		const {name, sellIn, quality} = this.item;
-		let newQuality = quality;
+	public update(): LimitedItem {
+		const {sellIn} = this.item;
+		let updatedItem = this.item;
 		if (sellIn <= 0) {
-			newQuality = 0;
+			updatedItem = updatedItem.withQuality(0);
 		} else if (sellIn <= 5) {
-			newQuality = quality + 3;
+			updatedItem = updatedItem.addQuality(3);
 		} else if (sellIn <= 10) {
-			newQuality = quality + 2;
+			updatedItem = updatedItem.addQuality(2);
 		} else {
-			newQuality = quality + 1;
+			updatedItem = updatedItem.addQuality(1);
 		}
-		newQuality = newQuality >= 50 ? 50 : newQuality;
-		return new Item(name, sellIn - 1, newQuality);
+		return updatedItem.addSellIn(-1);
 	}
 }

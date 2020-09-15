@@ -1,10 +1,10 @@
-import {Item} from '../item';
+import {LimitedItem} from './limited-item';
 import {UpdatableItem} from './updatable-item';
 
 export class ImmutableItem implements UpdatableItem {
-	public constructor(private readonly item: Item) {}
+	public constructor(private readonly item: LimitedItem) {}
 
-	public update(): Item {
+	public update(): LimitedItem {
 		return this.item;
 	}
 }
