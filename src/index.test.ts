@@ -19,9 +19,18 @@ describe('GlidedRose tests', () => {
 			expect(updateItems(items)).toEqual(expectedItems);
 		});
 
-		it('quality and sell in should not be negative', () => {
-			const item = new ItemBuilder().withSellIn(0).withQuality(0).build();
-			expect(updateItems([item])).toEqual([item]);
+		it('quality should not be negative', () => {
+			const item = new ItemBuilder().withQuality(0).build();
+			expect(updateItems([item])).toEqual([
+				new Item(item.name, item.sellIn - 1, 0),
+			]);
+		});
+
+		it('once the sellIn value is 0 quality should decrease by two', () => {
+			const item = new ItemBuilder().withSellIn(0).withQuality(4).build();
+			expect(updateItems([item])).toEqual([
+				new Item(item.name, -1, item.quality - 2),
+			]);
 		});
 	});
 });
