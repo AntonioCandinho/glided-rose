@@ -1,15 +1,10 @@
-export class Item {
-	public constructor(
-		public readonly name: string,
-		public readonly sellIn: number,
-		public readonly quality: number,
-	) {}
-}
+import {Item} from './item';
+import {RegularItem} from './regular-item';
 
 export class GlidedRose {
 	public constructor(private readonly items: Item[]) {}
 
 	public updateQuality(): Item[] {
-		return this.items;
+		return this.items.map((i) => new RegularItem(i).update());
 	}
 }
